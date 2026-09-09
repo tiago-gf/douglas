@@ -74,7 +74,6 @@ export const TARGET_TABLES: Record<string, TargetTableConfig> = {
   }
 };
 
-// Converte valores numéricos no padrão brasileiro para Float SQL
 export function parseBrazilianNumber(val: any): number | null {
   if (val === null || val === undefined || val === '') return null;
   if (typeof val === 'number') return isNaN(val) ? null : val;
@@ -95,13 +94,11 @@ export function parseBrazilianNumber(val: any): number | null {
   return isNaN(parsed) ? null : parsed;
 }
 
-// Converte datas brasileiras (DD/MM/YYYY) ou formatos curtos para YYYY-MM-DD
 export function parseBrazilianDate(val: any): string | null {
   if (!val) return null;
   const str = String(val).trim();
   if (!str) return null;
 
-  // DD/MM/YYYY
   const dateRegex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
   const match = str.match(dateRegex);
   if (match) {
@@ -111,7 +108,6 @@ export function parseBrazilianDate(val: any): string | null {
     return `${year}-${month}-${day}`;
   }
 
-  // Formato mes/ano (ex: jan/24)
   const monthMap: Record<string, string> = {
     jan: '01', fev: '02', mar: '03', abr: '04', mai: '05', jun: '06',
     jul: '07', ago: '08', set: '09', out: '10', nov: '11', dez: '12'
@@ -166,7 +162,6 @@ export function processAndValidateFile(
     return { processedData: [], logs };
   }
 
-  // Validação de colunas obrigatórias
   const presentHeaders = Object.keys(rawRows[0] || {});
   const missingHeaders = config.requiredColumns.filter(
     (col) => !presentHeaders.includes(col.trim())
@@ -176,7 +171,7 @@ export function processAndValidateFile(
     logs.push({
       type: 'error',
       message: `A tabela selecionada exige a coluna "${missingHeaders.join(', ')}", mas ela não foi encontrada no arquivo.`,
-      fixInstruction: `Certifique-se de que selecionou o arquivo correto para a tabela "${config.name}". Colunas encontradas no arquivo: [${presentHeaders.join(', ')}].`
+      fixInstruction: `Certifique-se de que selecionou o arquivo correto para a tabela "${config.name}".`
     });
     return { processedData: [], logs };
   }
@@ -184,7 +179,7 @@ export function processAndValidateFile(
   const processedData: any[] = [];
 
   rawRows.forEach((row, index) => {
-    const lineNum = index + 2; // +1 cabeçalho +1 índice zero
+    const lineNum = index + 2;
     const cleanRow: Record<string, any> = {};
 
     try {
@@ -265,10 +260,10 @@ export function processAndValidateFile(
         cleanRow['id_cc'] = parseBrazilianNumber(row['Id_CC']);
         cleanRow['epe'] = String(row['EPE'] || '').trim();
         cleanRow['id_epe'] = parseBrazilianNumber(row['Id_Epe']);
-        cleanRow['operacao'] = String(row['OPERAÇÃO'] ?? row['OPERAO'] || '').trim();
+        cleanRow['operacao'] = String((row['OPERAÇÃO'] ?? row['OPERAO']) || '').trim();
         cleanRow['id_op'] = parseBrazilianNumber(row['Id_Op']) || 0;
         cleanRow['forma_de_pagamento'] = String(row['FORMA DE PAGAMENTO'] || '').trim();
-        cleanRow['dados_bancarios'] = String(row['DADOS BANCÁRIOS'] ?? row['DADOS BANCRIOS'] || '').trim();
+        cleanRow['dados_bancarios'] = String((row['DADOS BANCÁRIOS'] ?? row['DADOS BANCRIOS']) || '').trim();
         cleanRow['status'] = String(row['STATUS'] || '').trim();
         cleanRow['tem_comp_pgto'] = String(row['TEM COMP PGTO?'] || '').trim();
         cleanRow['arquivado'] = String(row['ARQUIVADO?'] || '').trim();
@@ -281,7 +276,7 @@ export function processAndValidateFile(
         cleanRow['cod_operacao'] = codOp;
         cleanRow['protocolo'] = String(row['PROTOCOLO'] || '').trim();
         cleanRow['operacao'] = String(row['OPERACAO'] || '').trim();
-        cleanRow['pais'] = String(row['PAÍS'] ?? row['PAS'] || '').trim();
+        cleanRow['pais'] = String((row['PAÍS'] ?? row['PAS']) || '').trim();
         cleanRow['tempo_quarentena'] = parseBrazilianNumber(row['TEMPO DE QUARENTENA']) || 0;
         cleanRow['quant_comprado'] = parseBrazilianNumber(row['QUANT. COMPRADO']) || 0;
         cleanRow['quant_exportados'] = parseBrazilianNumber(row['QUANT. EXPORTADOS']) || 0;
