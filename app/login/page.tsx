@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Lock, Mail, ArrowRight, ShieldCheck, Database } from 'lucide-react';
+import { Lock, Mail, ArrowRight, ShieldCheck, Database, CircleCheckBig } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,6 +17,12 @@ export default function LoginPage() {
     setLoading(true);
     setErrorMsg('');
 
+    if (!supabase) {
+      setErrorMsg('Supabase ainda não está configurado. Defina as variáveis de ambiente antes de entrar.');
+      setLoading(false);
+      return;
+    }
+
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
@@ -28,68 +34,107 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4">
-      <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-2xl">
-        <div className="flex items-center space-x-3 mb-8">
-          <div className="p-3 bg-blue-600/10 border border-blue-500/20 rounded-lg">
-            <Database className="w-6 h-6 text-blue-400" />
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_22%),linear-gradient(135deg,_#020817_0%,_#09111f_100%)] px-4 py-10 text-slate-100">
+      <div className="mx-auto grid max-w-6xl overflow-hidden rounded-[30px] border border-slate-800 bg-slate-900/80 shadow-[0_30px_80px_rgba(2,6,23,0.8)] backdrop-blur-xl lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="relative hidden overflow-hidden border-r border-slate-800 bg-[linear-gradient(135deg,rgba(15,23,42,0.95),rgba(2,6,23,0.9))] p-10 lg:flex lg:flex-col lg:justify-between">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(96,165,250,0.18),_transparent_35%)]" />
+          <div className="relative z-10">
+            <div className="mb-8 flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/10 ring-1 ring-blue-500/30">
+                <Database className="h-6 w-6 text-blue-400" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-300">EtlOS</p>
+                <p className="text-sm text-slate-400">Data Control Suite</p>
+              </div>
+            </div>
+
+            <div className="space-y-5">
+              <h1 className="max-w-md text-4xl font-black leading-tight text-white">
+                Automatize a ingestão de dados com segurança e rapidez.
+              </h1>
+              <p className="max-w-md text-base text-slate-300">
+                Valide arquivos, normalize composições e sincronize informação com consistência para o seu time de negócio.
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-bold text-white tracking-tight">ETL Data Ingest</h1>
-            <p className="text-xs text-slate-400">Painel de Carga e Sincronização Supabase</p>
+
+          <div className="relative z-10 space-y-4">
+            {[
+              'Upload de CSV em poucos passos',
+              'Validação inteligente por campo',
+              'Sincronização com Supabase e BI'
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-950/50 px-4 py-3 text-sm text-slate-200">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
+                  <CircleCheckBig className="h-4 w-4" />
+                </div>
+                {item}
+              </div>
+            ))}
           </div>
         </div>
 
-        {errorMsg && (
-          <div className="mb-6 p-3.5 bg-red-950/50 border border-red-500/30 rounded-lg text-red-200 text-xs leading-relaxed">
-            {errorMsg}
-          </div>
-        )}
-
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
-              E-mail Corporativo
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu.email@empresa.com"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition"
-              />
+        <div className="p-6 sm:p-8 lg:p-10">
+          <div className="mx-auto max-w-md">
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Acesso</p>
+                <h2 className="mt-2 text-3xl font-bold text-white">Entrar</h2>
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/10 ring-1 ring-blue-500/30">
+                <ShieldCheck className="h-6 w-6 text-blue-400" />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
-              Senha de Acesso
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition"
-              />
-            </div>
-          </div>
+            {errorMsg && (
+              <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-950/50 px-4 py-3 text-sm text-red-200">
+                {errorMsg}
+              </div>
+            )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full mt-2 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm rounded-lg flex items-center justify-center space-x-2 transition shadow-lg shadow-blue-600/20 disabled:opacity-50"
-          >
-            <span>{loading ? 'Autenticando...' : 'Acessar Sistema'}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </form>
+            <form onSubmit={handleLogin} className="space-y-5">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-300">E-mail corporativo</label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-3.5 h-4 w-4 text-slate-500" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="nome@empresa.com"
+                    className="w-full rounded-2xl border border-slate-700 bg-slate-950/80 py-3 pl-11 pr-4 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-300">Senha</label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-3.5 h-4 w-4 text-slate-500" />
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full rounded-2xl border border-slate-700 bg-slate-950/80 py-3 pl-11 pr-4 text-sm text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 px-4 py-3.5 text-sm font-semibold text-white shadow-[0_18px_38px_rgba(59,130,246,0.38)] transition hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                <span>{loading ? 'Autenticando...' : 'Acessar dashboard'}</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );
