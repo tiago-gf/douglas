@@ -2,8 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Data Ingest & ETL Pipeline',
-  description: 'Sistema de Importação e Sincronização com Supabase',
+  title: 'Data Ingest & ETL Pipeline | Enterprise',
+  description: 'Sistema de Importação e Sincronização com Supabase para Power BI',
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className="bg-slate-950 text-slate-100 antialiased">
+      <body className="bg-slate-950 text-slate-100 antialiased min-h-screen">
         {children}
       </body>
     </html>
