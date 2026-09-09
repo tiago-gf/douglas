@@ -3,4 +3,4 @@ const nextConfig = {
   output: 'standalone',
 };
 
-module.exports =вніш.nextConfig || nextConfig;
+module.exports = nextConfig;
