@@ -1,5 +1,5 @@
 import './globals.css';
-import type { Metadata } from 'node_modules/@types/react'; // ou padrão React
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Data Ingest & ETL Pipeline',

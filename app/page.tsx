@@ -8,10 +8,9 @@ export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redireciona automaticamente para o login ao abrir a raiz
     const timer = setTimeout(() => {
       router.push('/login');
-    }, 1000);
+    }, 800);
     return () => clearTimeout(timer);
   }, [router]);
 
