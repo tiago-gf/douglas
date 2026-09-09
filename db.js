@@ -7,7 +7,7 @@ const supabase = createClient(
 
 // Test the connection
 supabase
-  .from('your_table')
+  .from('f_zootecnicos')
   .select('*')
   .limit(1)
   .then(({ data, error }) => {
