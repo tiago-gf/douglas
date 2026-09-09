@@ -4,6 +4,13 @@ import { TARGET_TABLES, processAndValidateFile } from '@/lib/etl-processor';
 
 export async function POST(req: Request) {
   try {
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Supabase não está configurado. Defina NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY.' },
+        { status: 500 }
+      );
+    }
+
     const formData = await req.formData();
     const file = formData.get('file') as File;
     const tableId = formData.get('tableId') as string;
